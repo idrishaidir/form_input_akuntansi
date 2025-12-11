@@ -90,7 +90,7 @@
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Transaksi</label>
                         <div class="relative">
-                            <select class="block w-full pl-3 pr-10 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none shadow-sm cursor-pointer hover:bg-slate-50 transition">
+                            <select id="trxType" name="jenis_transaksi" class="block w-full pl-3 pr-10 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none shadow-sm cursor-pointer hover:bg-slate-50 transition">
                                 <option value="" disabled selected>Pilih jenis...</option>
                                 <option value="buy">Pembelian</option>
                                 <option value="sell">Penjualan</option>
@@ -110,7 +110,7 @@
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Nomor Bukti</label>
                         <div class="relative">
-                            <input type="text" placeholder="Cth: INV/2023/001" class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-sm font-mono">
+                            <input type="text" id="trxNomorBukti" name="nomor_bukti" placeholder="Cth: INV/2023/001" class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-sm font-mono">
                             <button class="absolute inset-y-0 right-0 pr-3 flex items-center text-xs text-blue-600 hover:text-blue-800 font-medium cursor-pointer">
                                 Auto
                             </button>
@@ -118,7 +118,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Deskripsi</label>
-                        <textarea rows="3" placeholder="Jelaskan detail transaksi..." class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-sm resize-none"></textarea>
+                        <textarea rows="3" name="deskripsi" placeholder="Jelaskan detail transaksi..." class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-sm resize-none"></textarea>
                     </div>
                 </div>
             </div>
@@ -150,7 +150,7 @@
                         <!-- Baris 1 -->
                         <tr class="group hover:bg-slate-50 transition">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <select class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <select name ="akun[]"class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm">
                                     <option>101 - Kas Besar</option>
                                     <option>102 - Bank BCA</option>
                                     <option>401 - Pendapatan Jasa</option>
@@ -158,30 +158,10 @@
                                 </select>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <input type="number" oninput="calculateTotal()" class="input-debit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono placeholder-slate-400" placeholder="0">
+                                <input name="debit[]" type="number" oninput="calculateTotal()" class="input-debit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono placeholder-slate-400" placeholder="0">
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <input type="number" oninput="calculateTotal()" class="input-credit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono placeholder-slate-400" placeholder="0">
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <button onclick="deleteRow(this)" class="text-slate-400 hover:text-red-500 transition p-2 rounded-full hover:bg-red-50" title="Hapus Baris">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                </button>
-                            </td>
-                        </tr>
-                         <!-- Baris 2 -->
-                         <tr class="group hover:bg-slate-50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <select class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm">
-                                    <option>101 - Kas Besar</option>
-                                    <option selected>401 - Pendapatan Jasa</option>
-                                </select>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <input type="number" oninput="calculateTotal()" class="input-debit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono placeholder-slate-400" placeholder="0">
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <input type="number" oninput="calculateTotal()" class="input-credit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono placeholder-slate-400" placeholder="0">
+                                <input name="kredit[]" type="number" oninput="calculateTotal()" class="input-credit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono placeholder-slate-400" placeholder="0">
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                 <button onclick="deleteRow(this)" class="text-slate-400 hover:text-red-500 transition p-2 rounded-full hover:bg-red-50" title="Hapus Baris">
@@ -268,5 +248,157 @@
             </div>
         </div>
     </footer>
+    <script>
+        // Inisialisasi awal
+        document.addEventListener('DOMContentLoaded', calculateTotal);
+
+        // Fungsi Tambah Baris
+        function addRow() {
+            const tbody = document.getElementById('journalBody');
+            const row = document.createElement('tr');
+            row.className = "group hover:bg-slate-50 transition";
+            row.innerHTML = `
+                <td class="px-6 py-4"><select class="account-select block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm"><option value="101 - Kas Besar">101 - Kas Besar</option><option value="102 - Bank BCA">102 - Bank BCA</option><option value="401 - Pendapatan Jasa">401 - Pendapatan Jasa</option><option value="501 - Beban Sewa">501 - Beban Sewa</option></select></td>
+                <td class="px-6 py-4"><input type="number" oninput="calculateTotal()" class="input-debit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white text-sm font-mono" value="0"></td>
+                <td class="px-6 py-4"><input type="number" oninput="calculateTotal()" class="input-credit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white text-sm font-mono" value="0"></td>
+                <td class="px-6 py-4 text-center"><button onclick="deleteRow(this)" class="text-slate-400 hover:text-red-500"><i class="fa-regular fa-trash-can"></i></button></td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        // Fungsi Hapus Baris
+        function deleteRow(btn) {
+            if(document.querySelectorAll('#journalBody tr').length > 1) {
+                btn.closest('tr').remove();
+                calculateTotal();
+            } else {
+                alert("Minimal satu baris jurnal harus ada.");
+            }
+        }
+
+        // Fungsi Hitung Total & Cek Balance
+        function calculateTotal() {
+            let debit = 0, kredit = 0;
+            document.querySelectorAll('.input-debit').forEach(i => debit += parseFloat(i.value) || 0);
+            document.querySelectorAll('.input-credit').forEach(i => kredit += parseFloat(i.value) || 0);
+
+            const fmt = new Intl.NumberFormat('id-ID');
+            document.getElementById('totalDebitDisplay').innerText = fmt.format(debit);
+            document.getElementById('totalCreditDisplay').innerText = fmt.format(kredit);
+
+            const diff = Math.abs(debit - kredit);
+            const isBalanced = diff === 0 && debit > 0;
+            
+            document.getElementById('diffDisplay').innerText = fmt.format(diff);
+            
+            // Update UI (Warna & Tombol)
+            const indicator = document.getElementById('balanceIndicator');
+            const iconBox = document.getElementById('balanceIconBox');
+            const title = document.getElementById('balanceTitle');
+            const btn = document.getElementById('btnSave');
+
+            if(isBalanced) {
+                indicator.className = "bg-green-50 border-t border-green-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4";
+                iconBox.className = "w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600";
+                iconBox.innerHTML = '<i class="fa-solid fa-check"></i>';
+                title.innerText = "BALANCE";
+                title.className = "text-sm font-bold text-green-800";
+                
+                // Aktifkan Tombol
+                btn.disabled = false;
+                btn.className = "px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 cursor-pointer transition shadow-md";
+            } else {
+                indicator.className = "bg-red-50 border-t border-red-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4";
+                iconBox.className = "w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600";
+                iconBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                title.innerText = "TIDAK BALANCE";
+                title.className = "text-sm font-bold text-red-800";
+                
+                // Matikan Tombol
+                btn.disabled = true;
+                btn.className = "px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-slate-400 cursor-not-allowed transition";
+            }
+        }
+
+        // Fungsi Simpan dengan Debugging Error
+        document.getElementById('btnSave').addEventListener('click', function() {
+            // Cek lagi status disabled untuk keamanan
+            if(this.disabled) return;
+            
+            // Ubah text tombol biar user tahu sedang proses
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Menyimpan...';
+            this.disabled = true;
+
+            const data = {
+                tanggal: document.getElementById('trxDate').value,
+                jenis: document.getElementById('trxType').value,
+                bukti: document.getElementById('trxNomorBukti').value,
+                deskripsi: document.getElementById('trxDeskripsi').value,
+                details: []
+            };
+
+            // Validasi Sederhana
+            if(!data.tanggal || !data.jenis || !data.bukti) {
+                alert("Harap lengkapi Tanggal, Jenis Transaksi, dan Nomor Bukti!");
+                this.innerHTML = originalText;
+                this.disabled = false;
+                return;
+            }
+
+            // Ambil data baris
+            document.querySelectorAll('#journalBody tr').forEach(row => {
+                const d = parseFloat(row.querySelector('.input-debit').value) || 0;
+                const k = parseFloat(row.querySelector('.input-credit').value) || 0;
+                // Kirim baris hanya jika ada nilainya
+                if(d > 0 || k > 0) {
+                    data.details.push({
+                        akun: row.querySelector('.account-select').value,
+                        debit: d,
+                        kredit: k
+                    });
+                }
+            });
+
+            // Kirim via Fetch
+            fetch('simpan_transaksi.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                // Cek jika file PHP tidak ditemukan (404) atau Error Server (500)
+                if (!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status} (${response.statusText}). Cek apakah file simpan_transaksi.php ada.`);
+                }
+                return response.text(); // Ambil sebagai text dulu untuk debug
+            })
+            .then(text => {
+                console.log("Raw Response:", text); // Lihat di Console (F12)
+                try {
+                    return JSON.parse(text); // Coba ubah ke JSON
+                } catch (e) {
+                    throw new Error("Respon bukan JSON valid. Kemungkinan ada error PHP tercetak: " + text.substring(0, 100));
+                }
+            })
+            .then(result => {
+                if(result.status === 'success') {
+                    alert('✅ Transaksi Berhasil Disimpan!');
+                    location.reload();
+                } else {
+                    throw new Error(result.message || "Gagal menyimpan data.");
+                }
+            })
+            .catch(error => {
+                // Tampilkan error yang sebenarnya terjadi!
+                alert('❌ TERJADI KESALAHAN:\n' + error.message);
+                console.error(error);
+                
+                // Kembalikan tombol seperti semula
+                this.innerHTML = originalText;
+                this.disabled = false;
+            });
+        });
+    </script>
 </body>
 </html>
