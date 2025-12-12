@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Transaksi Akuntansi</title>
+    <title>Finance App</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -43,12 +43,6 @@
                         <span class="font-bold text-xl tracking-tight">FinanceApp</span>
                     </div>
                 </div>
-                <div class="flex items-center">
-                    <div class="flex items-center gap-2 text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-                        <i class="fa-solid fa-user-circle"></i>
-                        <span>Admin Keuangan</span>
-                    </div>
-                </div>
             </div>
         </div>
     </nav>
@@ -63,9 +57,9 @@
                 <p class="text-sm text-slate-500 mt-1">Buat jurnal akuntansi manual untuk pembukuan.</p>
             </div>
             <!-- Status Badge (Optional) -->
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                <i class="fa-solid fa-pen-to-square mr-1.5"></i> Mode Draft
-            </span>
+            <a href="histori.php" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                <i class="fa-solid fa-pen-to-square mr-1.5"></i> Histori Transaksi
+            </a>
         </div>
 
         <!-- SECTION A: Header Form (Informasi Transaksi) -->
@@ -111,14 +105,11 @@
                         <label class="block text-sm font-medium text-slate-700 mb-1">Nomor Bukti</label>
                         <div class="relative">
                             <input type="text" id="trxNomorBukti" name="nomor_bukti" placeholder="Cth: INV/2023/001" class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-sm font-mono">
-                            <button class="absolute inset-y-0 right-0 pr-3 flex items-center text-xs text-blue-600 hover:text-blue-800 font-medium cursor-pointer">
-                                Auto
-                            </button>
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Deskripsi</label>
-                        <textarea rows="3" name="deskripsi" placeholder="Jelaskan detail transaksi..." class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-sm resize-none"></textarea>
+                        <textarea rows="3" id="trxDeskripsi"name="deskripsi" placeholder="Jelaskan detail transaksi..." class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-sm resize-none"></textarea>
                     </div>
                 </div>
             </div>
@@ -147,10 +138,11 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-slate-200" id="journalBody">
+                        </tbody>
                         <!-- Baris 1 -->
                         <tr class="group hover:bg-slate-50 transition">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <select name ="akun[]"class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <select name="akun[]" class="account-select block w-full px-3 py-2 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm">
                                     <option>101 - Kas Besar</option>
                                     <option>102 - Bank BCA</option>
                                     <option>401 - Pendapatan Jasa</option>
@@ -249,156 +241,232 @@
         </div>
     </footer>
     <script>
-        // Inisialisasi awal
-        document.addEventListener('DOMContentLoaded', calculateTotal);
+    // Variabel Global untuk menyimpan file
+    let uploadedFile = null;
 
-        // Fungsi Tambah Baris
-        function addRow() {
-            const tbody = document.getElementById('journalBody');
-            const row = document.createElement('tr');
-            row.className = "group hover:bg-slate-50 transition";
-            row.innerHTML = `
-                <td class="px-6 py-4"><select class="account-select block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm"><option value="101 - Kas Besar">101 - Kas Besar</option><option value="102 - Bank BCA">102 - Bank BCA</option><option value="401 - Pendapatan Jasa">401 - Pendapatan Jasa</option><option value="501 - Beban Sewa">501 - Beban Sewa</option></select></td>
-                <td class="px-6 py-4"><input type="number" oninput="calculateTotal()" class="input-debit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white text-sm font-mono" value="0"></td>
-                <td class="px-6 py-4"><input type="number" oninput="calculateTotal()" class="input-credit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white text-sm font-mono" value="0"></td>
-                <td class="px-6 py-4 text-center"><button onclick="deleteRow(this)" class="text-slate-400 hover:text-red-500"><i class="fa-regular fa-trash-can"></i></button></td>
-            `;
-            tbody.appendChild(row);
+    document.addEventListener('DOMContentLoaded', calculateTotal);
+
+    // --- LOGIKA DRAG & DROP & UPLOAD ---
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const filePreview = document.getElementById('filePreview');
+
+    // Klik area -> Buka file explorer
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // Saat file dipilih dari explorer
+    fileInput.addEventListener('change', function() {
+        handleFile(this.files[0]);
+    });
+
+    // Efek saat file di-drag masuk
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-active');
+    });
+
+    // Efek saat file di-drag keluar
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('drag-active');
+    });
+
+    // Saat file dilepas (dropped)
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-active');
+        handleFile(e.dataTransfer.files[0]);
+    });
+
+    // Fungsi proses file
+    function handleFile(file) {
+        if (!file) return;
+
+        // Validasi Ukuran (Max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert("Ukuran file terlalu besar! Maksimal 5MB.");
+            return;
         }
 
-        // Fungsi Hapus Baris
-        function deleteRow(btn) {
-            if(document.querySelectorAll('#journalBody tr').length > 1) {
-                btn.closest('tr').remove();
-                calculateTotal();
-            } else {
-                alert("Minimal satu baris jurnal harus ada.");
-            }
+        // Simpan ke variabel global
+        uploadedFile = file;
+
+        // Tampilkan Preview
+        filePreview.classList.remove('hidden');
+        filePreview.innerHTML = `
+            <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded flex items-center justify-center">
+                        <i class="fa-solid fa-file"></i>
+                    </div>
+                    <div class="text-sm">
+                        <p class="font-medium text-slate-700 truncate max-w-[200px]">${file.name}</p>
+                        <p class="text-xs text-slate-500">${(file.size/1024).toFixed(1)} KB</p>
+                    </div>
+                </div>
+                <button type="button" onclick="removeFile(event)" class="text-slate-400 hover:text-red-500 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        `;
+    }
+
+    // Hapus file dari preview
+    function removeFile(e) {
+        e.stopPropagation(); // Biar tidak memicu klik dropZone
+        uploadedFile = null;
+        fileInput.value = ''; // Reset input asli
+        filePreview.innerHTML = '';
+        filePreview.classList.add('hidden');
+    }
+
+    // --- LOGIKA TABEL & SIMPAN ---
+
+    function addRow() {
+        const tbody = document.getElementById('journalBody');
+        const row = document.createElement('tr');
+        row.className = "group hover:bg-slate-50 transition";
+        row.innerHTML = `
+            <td class="px-6 py-4">
+                <select class="account-select block w-full px-3 py-2 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    <option value="101 - Kas Besar">101 - Kas Besar</option>
+                    <option value="102 - Bank BCA">102 - Bank BCA</option>
+                    <option value="401 - Pendapatan Jasa">401 - Pendapatan Jasa</option>
+                    <option value="501 - Beban Sewa">501 - Beban Sewa</option>
+                </select>
+            </td>
+            <td class="px-6 py-4"><input type="number" oninput="calculateTotal()" class="input-debit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white text-sm font-mono" placeholder="0"></td>
+            <td class="px-6 py-4"><input type="number" oninput="calculateTotal()" class="input-credit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white text-sm font-mono" placeholder="0"></td>
+            <td class="px-6 py-4 text-center"><button onclick="deleteRow(this)" class="text-slate-400 hover:text-red-500"><i class="fa-regular fa-trash-can"></i></button></td>
+        `;
+        tbody.appendChild(row);
+    }
+
+    function deleteRow(btn) {
+        if(document.querySelectorAll('#journalBody tr').length > 1) {
+            btn.closest('tr').remove();
+            calculateTotal();
+        } else {
+            alert("Minimal satu baris jurnal harus ada.");
+        }
+    }
+
+    function calculateTotal() {
+        let debit = 0, kredit = 0;
+        document.querySelectorAll('.input-debit').forEach(i => debit += parseFloat(i.value) || 0);
+        document.querySelectorAll('.input-credit').forEach(i => kredit += parseFloat(i.value) || 0);
+
+        const fmt = new Intl.NumberFormat('id-ID');
+        document.getElementById('totalDebitDisplay').innerText = fmt.format(debit);
+        document.getElementById('totalCreditDisplay').innerText = fmt.format(kredit);
+
+        const diff = Math.abs(debit - kredit);
+        const isBalanced = diff === 0 && debit > 0;
+        
+        document.getElementById('diffDisplay').innerText = fmt.format(diff);
+        
+        const indicator = document.getElementById('balanceIndicator');
+        const iconBox = document.getElementById('balanceIconBox');
+        const title = document.getElementById('balanceTitle');
+        const btn = document.getElementById('btnSave');
+
+        if(isBalanced) {
+            indicator.className = "bg-green-50 border-t border-green-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4";
+            iconBox.className = "w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600";
+            iconBox.innerHTML = '<i class="fa-solid fa-check"></i>';
+            title.innerText = "BALANCE";
+            title.className = "text-sm font-bold text-green-800";
+            btn.disabled = false;
+            btn.className = "px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 cursor-pointer transition shadow-md";
+        } else {
+            indicator.className = "bg-red-50 border-t border-red-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4";
+            iconBox.className = "w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600";
+            iconBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            title.innerText = "TIDAK BALANCE";
+            title.className = "text-sm font-bold text-red-800";
+            btn.disabled = true;
+            btn.className = "px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-slate-400 cursor-not-allowed transition";
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('trxDate').value = '';
+        document.getElementById('trxType').value = '';
+        document.getElementById('trxNomorBukti').value = '';
+        if(document.getElementById('trxDeskripsi')) document.getElementById('trxDeskripsi').value = '';
+        
+        const tbody = document.getElementById('journalBody');
+        tbody.innerHTML = '';
+        addRow();
+
+        // Reset File
+        removeFile({ stopPropagation: () => {} });
+
+        calculateTotal();
+    }
+
+    // --- PROSES SIMPAN (DENGAN FORMDATA) ---
+    document.getElementById('btnSave').addEventListener('click', function() {
+        if(this.disabled) return;
+
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Menyimpan...';
+        this.disabled = true;
+
+        // 1. Siapkan FormData (Bukan JSON biasa)
+        const formData = new FormData();
+        formData.append('tanggal', document.getElementById('trxDate').value);
+        formData.append('jenis', document.getElementById('trxType').value);
+        formData.append('bukti', document.getElementById('trxNomorBukti').value);
+        
+        if(document.getElementById('trxDeskripsi')) {
+             formData.append('deskripsi', document.getElementById('trxDeskripsi').value);
         }
 
-        // Fungsi Hitung Total & Cek Balance
-        function calculateTotal() {
-            let debit = 0, kredit = 0;
-            document.querySelectorAll('.input-debit').forEach(i => debit += parseFloat(i.value) || 0);
-            document.querySelectorAll('.input-credit').forEach(i => kredit += parseFloat(i.value) || 0);
-
-            const fmt = new Intl.NumberFormat('id-ID');
-            document.getElementById('totalDebitDisplay').innerText = fmt.format(debit);
-            document.getElementById('totalCreditDisplay').innerText = fmt.format(kredit);
-
-            const diff = Math.abs(debit - kredit);
-            const isBalanced = diff === 0 && debit > 0;
-            
-            document.getElementById('diffDisplay').innerText = fmt.format(diff);
-            
-            // Update UI (Warna & Tombol)
-            const indicator = document.getElementById('balanceIndicator');
-            const iconBox = document.getElementById('balanceIconBox');
-            const title = document.getElementById('balanceTitle');
-            const btn = document.getElementById('btnSave');
-
-            if(isBalanced) {
-                indicator.className = "bg-green-50 border-t border-green-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4";
-                iconBox.className = "w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600";
-                iconBox.innerHTML = '<i class="fa-solid fa-check"></i>';
-                title.innerText = "BALANCE";
-                title.className = "text-sm font-bold text-green-800";
-                
-                // Aktifkan Tombol
-                btn.disabled = false;
-                btn.className = "px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 cursor-pointer transition shadow-md";
-            } else {
-                indicator.className = "bg-red-50 border-t border-red-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4";
-                iconBox.className = "w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600";
-                iconBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-                title.innerText = "TIDAK BALANCE";
-                title.className = "text-sm font-bold text-red-800";
-                
-                // Matikan Tombol
-                btn.disabled = true;
-                btn.className = "px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-slate-400 cursor-not-allowed transition";
-            }
+        // 2. Masukkan File (Jika ada)
+        if (uploadedFile) {
+            formData.append('file_bukti', uploadedFile);
         }
 
-        // Fungsi Simpan dengan Debugging Error
-        document.getElementById('btnSave').addEventListener('click', function() {
-            // Cek lagi status disabled untuk keamanan
-            if(this.disabled) return;
-            
-            // Ubah text tombol biar user tahu sedang proses
-            const originalText = this.innerHTML;
-            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Menyimpan...';
-            this.disabled = true;
-
-            const data = {
-                tanggal: document.getElementById('trxDate').value,
-                jenis: document.getElementById('trxType').value,
-                bukti: document.getElementById('trxNomorBukti').value,
-                deskripsi: document.getElementById('trxDeskripsi').value,
-                details: []
-            };
-
-            // Validasi Sederhana
-            if(!data.tanggal || !data.jenis || !data.bukti) {
-                alert("Harap lengkapi Tanggal, Jenis Transaksi, dan Nomor Bukti!");
-                this.innerHTML = originalText;
-                this.disabled = false;
-                return;
+        // 3. Masukkan Detail Jurnal (Sebagai string JSON di dalam FormData)
+        const details = [];
+        document.querySelectorAll('#journalBody tr').forEach(row => {
+            const d = parseFloat(row.querySelector('.input-debit').value) || 0;
+            const k = parseFloat(row.querySelector('.input-credit').value) || 0;
+            if(d > 0 || k > 0) {
+                details.push({
+                    akun: row.querySelector('.account-select').value,
+                    debit: d,
+                    kredit: k
+                });
             }
-
-            // Ambil data baris
-            document.querySelectorAll('#journalBody tr').forEach(row => {
-                const d = parseFloat(row.querySelector('.input-debit').value) || 0;
-                const k = parseFloat(row.querySelector('.input-credit').value) || 0;
-                // Kirim baris hanya jika ada nilainya
-                if(d > 0 || k > 0) {
-                    data.details.push({
-                        akun: row.querySelector('.account-select').value,
-                        debit: d,
-                        kredit: k
-                    });
-                }
-            });
-
-            // Kirim via Fetch
-            fetch('simpan_transaksi.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                // Cek jika file PHP tidak ditemukan (404) atau Error Server (500)
-                if (!response.ok) {
-                    throw new Error(`HTTP Error! Status: ${response.status} (${response.statusText}). Cek apakah file simpan_transaksi.php ada.`);
-                }
-                return response.text(); // Ambil sebagai text dulu untuk debug
-            })
-            .then(text => {
-                console.log("Raw Response:", text); // Lihat di Console (F12)
-                try {
-                    return JSON.parse(text); // Coba ubah ke JSON
-                } catch (e) {
-                    throw new Error("Respon bukan JSON valid. Kemungkinan ada error PHP tercetak: " + text.substring(0, 100));
-                }
-            })
-            .then(result => {
-                if(result.status === 'success') {
-                    alert('✅ Transaksi Berhasil Disimpan!');
-                    location.reload();
-                } else {
-                    throw new Error(result.message || "Gagal menyimpan data.");
-                }
-            })
-            .catch(error => {
-                // Tampilkan error yang sebenarnya terjadi!
-                alert('❌ TERJADI KESALAHAN:\n' + error.message);
-                console.error(error);
-                
-                // Kembalikan tombol seperti semula
-                this.innerHTML = originalText;
-                this.disabled = false;
-            });
         });
+        formData.append('details', JSON.stringify(details));
+
+        // 4. Kirim Fetch
+        fetch('simpan_transaksi.php', {
+            method: 'POST',
+            body: formData // Header Content-Type otomatis diatur oleh browser
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("HTTP Error " + response.status);
+            return response.json();
+        })
+        .then(result => {
+            if(result.status === 'success') {
+                alert('✅ Transaksi Berhasil Disimpan!');
+                resetForm(); // Panggil reset
+            } else {
+                throw new Error(result.message || "Gagal menyimpan.");
+            }
+        })
+        .catch(error => {
+            alert('❌ ERROR: ' + error.message);
+        })
+        .finally(() => {
+            this.innerHTML = originalText;
+            this.disabled = false;
+        });
+    });
     </script>
 </body>
 </html>
