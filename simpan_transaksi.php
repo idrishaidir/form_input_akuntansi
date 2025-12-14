@@ -84,7 +84,7 @@ try {
 } catch (Throwable $e) { 
     // Menggunakan 'Throwable' agar bisa menangkap Fatal Error (seperti error SQL bind)
     if (isset($koneksi)) mysqli_rollback($koneksi);
-    http_response_code(500);
+    // http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }
 ?>

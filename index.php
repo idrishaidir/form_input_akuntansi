@@ -3,320 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance App</title>
+    <title>Input Transaksi Baru - FinanceApp</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome untuk Ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; }
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
         
-        /* Custom Scrollbar untuk tabel di mobile */
-        .table-container::-webkit-scrollbar { height: 6px; }
-        .table-container::-webkit-scrollbar-track { background: #f1f1f1; }
-        .table-container::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
-        .table-container::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-
-        /* Hide number input arrows */
+        /* Hilangkan spinner di input number */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         
         /* Drag & Drop Active State */
-        .drag-active { border-color: #2563EB !important; background-color: #EFF6FF !important; }
+        .drag-active { border-color: #3B82F6 !important; background-color: #EFF6FF !important; }
     </style>
 </head>
-<body class="text-slate-800 pb-24">
+<body class="text-slate-800 pb-32">
 
-    <!-- Navbar Sederhana -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-30">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center text-blue-600">
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+             <div class="flex-shrink-0 flex items-center text-blue-600">
                         <i class="fa-solid fa-calculator text-2xl mr-2"></i>
                         <span class="font-bold text-xl tracking-tight">FinanceApp</span>
-                    </div>
-                </div>
             </div>
+            <a href="histori.php" class="group text-sm font-medium text-slate-600 bg-white hover:bg-blue-600 hover:text-white border border-slate-200 hover:border-blue-600 px-4 py-2 rounded-lg transition-all shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-slate-400 group-hover:text-white transition-colors"></i> 
+                <span class="hidden sm:inline">Lihat Riwayat</span>
+            </a>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
         
-        <!-- Header Page -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-slate-900">Input Transaksi Baru</h1>
-                <p class="text-sm text-slate-500 mt-1">Buat jurnal akuntansi manual untuk pembukuan.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <div class="lg:col-span-2 space-y-6">
+                <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <h2 class="text-sm font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-2 pb-4">
+                        <i class="fa-regular fa-file-lines text-blue-500"></i> Informasi Umum
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-1">
+                            <label class="block text-sm font-semibold text-slate-700">Tanggal Transaksi</label>
+                            <input type="date" id="trxDate" class="block w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-sm font-semibold text-slate-700">Jenis Transaksi</label>
+                            <div class="relative">
+                                <select id="trxType" name="jenis_transaksi" class="block w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Pilih jenis...</option>
+                                    <option value="buy">Pembelian</option>
+                                    <option value="sell">Penjualan</option>
+                                    <option value="expense">Pengeluaran Biaya</option>
+                                    <option value="income">Pemasukan Lain</option>
+                                    <option value="journal">Jurnal Umum</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-slate-500">
+                                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-1 md:col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700">Nomor Bukti</label>
+                            <input type="text" id="trxNomorBukti" name="nomor_bukti" placeholder="Cth: INV/2023/001" class="block w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono tracking-wide">
+                        </div>
+                        <div class="space-y-1 md:col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700">Deskripsi</label>
+                            <textarea rows="3" id="trxDeskripsi" name="deskripsi" placeholder="Jelaskan detail transaksi..." class="block w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm resize-none"></textarea>
+                        </div>
+                    </div>
+                </section>
             </div>
-            <!-- Status Badge (Optional) -->
-            <a href="histori.php" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                <i class="fa-solid fa-pen-to-square mr-1.5"></i> Histori Transaksi
-            </a>
+
+            <div class="lg:col-span-1">
+                <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 h-full flex flex-col">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-paperclip"></i> Bukti Transaksi
+                    </h3>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div id="dropZone" class="flex-1 border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-blue-400 hover:bg-slate-50 transition-all cursor-pointer min-h-[160px] flex flex-col items-center justify-center relative group">
+                            <input type="file" id="fileInput" class="hidden" accept=".jpg,.jpeg,.png,.pdf">
+                            
+                            <div id="dropZoneContent" class="group-hover:scale-105 transition-transform duration-300">
+                                <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                                </div>
+                                <p class="text-sm font-medium text-slate-600">Klik atau Drag File</p>
+                                <p class="text-xs text-slate-400 mt-1">PDF/JPG (Max 5MB)</p>
+                            </div>
+
+                            <div id="filePreview" class="hidden absolute inset-0 bg-white bg-opacity-95 flex-col items-center justify-center w-full h-full rounded-xl z-10 p-4">
+                                <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-2 shadow-sm">
+                                    <i class="fa-solid fa-check text-xl"></i>
+                                </div>
+                                <p id="previewFileName" class="text-sm font-bold text-slate-700 px-2 truncate w-full text-center mb-1">file.jpg</p>
+                                <p class="text-xs text-slate-500 mb-4">Siap diupload</p>
+                                <button type="button" onclick="removeFile(event)" class="text-xs bg-red-50 text-red-600 px-4 py-1.5 rounded-full hover:bg-red-100 hover:text-red-700 font-medium transition border border-red-100">
+                                    Hapus File
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
 
-        <!-- SECTION A: Header Form (Informasi Transaksi) -->
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-6 border-b border-slate-100 bg-slate-50/50">
-                <h2 class="text-sm font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-regular fa-file-lines text-blue-500"></i> Informasi Umum
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-20">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-blue-500"></i> Detail Jurnal
                 </h2>
-            </div>
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Kiri -->
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal Transaksi</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa-regular fa-calendar text-slate-400"></i>
-                            </div>
-                            <input type="date" class="block w-full pl-10 pr-3 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition shadow-sm" id="trxDate">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Transaksi</label>
-                        <div class="relative">
-                            <select id="trxType" name="jenis_transaksi" class="block w-full pl-3 pr-10 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none shadow-sm cursor-pointer hover:bg-slate-50 transition">
-                                <option value="" disabled selected>Pilih jenis...</option>
-                                <option value="buy">Pembelian</option>
-                                <option value="sell">Penjualan</option>
-                                <option value="expense">Pengeluaran Biaya</option>
-                                <option value="income">Pemasukan Lain</option>
-                                <option value="journal">Jurnal Umum</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-slate-500">
-                                <i class="fa-solid fa-chevron-down text-xs"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kanan -->
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Nomor Bukti</label>
-                        <div class="relative">
-                            <input type="text" id="trxNomorBukti" name="nomor_bukti" placeholder="Cth: INV/2023/001" class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-sm font-mono">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Deskripsi</label>
-                        <textarea rows="3" id="trxDeskripsi"name="deskripsi" placeholder="Jelaskan detail transaksi..." class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-sm resize-none"></textarea>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION B: Detail Jurnal -->
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h2 class="text-sm font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-list-ol text-blue-500"></i> Detail Jurnal
-                </h2>
-                <button onclick="addRow()" class="text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                <button onclick="addRow()" class="text-xs font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition border border-blue-200 flex items-center gap-2">
                     <i class="fa-solid fa-plus"></i> Tambah Baris
                 </button>
             </div>
             
-            <!-- Table Container (Scrollable on Mobile) -->
-            <div class="overflow-x-auto table-container">
-                <table class="min-w-full divide-y divide-slate-200" id="journalTable">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200">
                     <thead class="bg-slate-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider w-5/12">Akun (COA)</th>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider w-3/12">Debit (Rp)</th>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider w-3/12">Kredit (Rp)</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider w-1/12">Aksi</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider w-5/12">Akun (COA)</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-slate-500 uppercase tracking-wider w-3/12">Debit (Rp)</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-slate-500 uppercase tracking-wider w-3/12">Kredit (Rp)</th>
+                            <th scope="col" class="px-6 py-3 text-center w-1/12"></th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-slate-200" id="journalBody">
                         </tbody>
-                        <!-- Baris 1 -->
-                        <tr class="group hover:bg-slate-50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <select name="akun[]" class="account-select block w-full px-3 py-2 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm">
-                                    <option>101 - Kas Besar</option>
-                                    <option>102 - Bank BCA</option>
-                                    <option>401 - Pendapatan Jasa</option>
-                                    <option>501 - Beban Sewa</option>
-                                </select>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <input name="debit[]" type="number" oninput="calculateTotal()" class="input-debit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono placeholder-slate-400" placeholder="0">
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <input name="kredit[]" type="number" oninput="calculateTotal()" class="input-credit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono placeholder-slate-400" placeholder="0">
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <button onclick="deleteRow(this)" class="text-slate-400 hover:text-red-500 transition p-2 rounded-full hover:bg-red-50" title="Hapus Baris">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <!-- Footer Tabel (Total) -->
-                    <tfoot class="bg-slate-50 border-t-2 border-slate-200">
+                    <tfoot class="bg-slate-50 border-t border-slate-200">
                         <tr>
-                            <td class="px-6 py-4 text-right text-sm font-bold text-slate-600">Total</td>
-                            <td class="px-6 py-4 text-right">
+                            <td class="px-6 py-3 text-right text-sm font-bold text-slate-600">Total</td>
+                            <td class="px-6 py-3 text-right">
                                 <div id="totalDebitDisplay" class="text-sm font-bold text-slate-800 font-mono">0</div>
                             </td>
-                            <td class="px-6 py-4 text-right">
+                            <td class="px-6 py-3 text-right">
                                 <div id="totalCreditDisplay" class="text-sm font-bold text-slate-800 font-mono">0</div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr id="balanceRowTable" class="bg-slate-100 transition-colors duration-300">
+                            <td class="px-6 py-2 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Status Balance</td>
+                            <td colspan="2" class="px-6 py-2 text-center">
+                                <div id="balanceStatusTable" class="inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-500 transition-all">
+                                    <i class="fa-solid fa-circle-question"></i> Belum Seimbang
+                                </div>
                             </td>
                             <td></td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
+        </section>
 
-            <!-- Indikator Keseimbangan (Balance Indicator) -->
-            <div id="balanceIndicator" class="bg-red-50 border-t border-red-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors duration-300">
-                <div class="flex items-center gap-3">
-                    <div id="balanceIconBox" class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 transition-colors duration-300">
-                        <i id="balanceIcon" class="fa-solid fa-triangle-exclamation"></i>
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.1)] z-40">
+            <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                
+                <div class="flex items-center gap-4 w-full sm:w-auto">
+                    <div id="balanceIconBox" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 transition-colors duration-300">
+                        <i id="balanceIcon" class="fa-solid fa-scale-unbalanced"></i>
                     </div>
                     <div>
-                        <p id="balanceTitle" class="text-sm font-bold text-red-800 transition-colors duration-300">TIDAK BALANCE</p>
-                        <p id="balanceSubtitle" class="text-xs text-red-600 mt-0.5 transition-colors duration-300">Selisih: <span id="diffDisplay" class="font-mono font-medium">0</span></p>
+                        <div id="balanceLabel" class="text-sm font-bold text-slate-500">Mengecek...</div>
+                        <div id="balanceSub" class="text-xs text-slate-400">Selisih: <span class="font-mono" id="diffDisplay">0</span></div>
                     </div>
                 </div>
-                <div class="text-xs text-slate-500 italic hidden sm:block">
-                    Pastikan Total Debit = Total Kredit
-                </div>
-            </div>
-        </section>
 
-        <!-- SECTION C: Upload Bukti -->
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-6 border-b border-slate-100 bg-slate-50/50">
-                <h2 class="text-sm font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-paperclip text-blue-500"></i> Bukti Transaksi
-                </h2>
-            </div>
-            <div class="p-6">
-                <div id="dropZone" class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-colors cursor-pointer group">
-                    <input type="file" id="fileInput" class="hidden" multiple>
-                    <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
-                    </div>
-                    <p class="text-sm font-medium text-slate-700">
-                        <span class="text-blue-600 hover:underline">Klik untuk upload</span> atau drag & drop file
-                    </p>
-                    <p class="text-xs text-slate-400 mt-2">PNG, JPG, atau PDF (Maks. 5MB)</p>
-                </div>
-
-                <!-- Preview Area (Hidden by default) -->
-                <div id="filePreview" class="mt-4 hidden space-y-2">
-                    <!-- Javascript will populate this -->
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <button onclick="resetForm()" class="w-full sm:w-auto px-6 py-3 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition border border-slate-200 hover:border-slate-300">
+                        Reset
+                    </button>
+                    <button id="btnSave" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2" disabled>
+                        <i class="fa-solid fa-paper-plane"></i> Simpan Transaksi
+                    </button>
                 </div>
             </div>
-        </section>
+        </div>
 
     </main>
 
-    <!-- SECTION D: Sticky Footer Action -->
-    <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40">
-        <div class="max-w-5xl mx-auto flex items-center justify-between">
-            <button onclick="resetForm()" class="px-5 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 transition border border-transparent hover:border-slate-300">
-                Reset
-            </button>
-            <div class="flex items-center gap-4">
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs text-slate-500">Status Data</p>
-                    <p class="text-sm font-bold text-slate-700">Belum Disimpan</p>
-                </div>
-                <button id="btnSave" class="px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-slate-400 cursor-not-allowed shadow-sm transition-all" disabled>
-                    <i class="fa-solid fa-check mr-2"></i> Simpan Transaksi
-                </button>
-            </div>
-        </div>
-    </footer>
     <script>
-    // Variabel Global untuk menyimpan file
+    // Variabel Global
     let uploadedFile = null;
 
-    document.addEventListener('DOMContentLoaded', calculateTotal);
+    document.addEventListener('DOMContentLoaded', () => {
+        // Tampilkan 2 baris default saat loading pertama
+        addRow(); 
+        addRow();
+        calculateTotal();
+    });
 
     // --- LOGIKA DRAG & DROP & UPLOAD ---
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const filePreview = document.getElementById('filePreview');
+    const previewFileName = document.getElementById('previewFileName');
 
-    // Klik area -> Buka file explorer
     dropZone.addEventListener('click', () => fileInput.click());
 
-    // Saat file dipilih dari explorer
     fileInput.addEventListener('change', function() {
         handleFile(this.files[0]);
     });
 
-    // Efek saat file di-drag masuk
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropZone.classList.add('drag-active');
     });
 
-    // Efek saat file di-drag keluar
     dropZone.addEventListener('dragleave', () => {
         dropZone.classList.remove('drag-active');
     });
 
-    // Saat file dilepas (dropped)
     dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropZone.classList.remove('drag-active');
         handleFile(e.dataTransfer.files[0]);
     });
 
-    // Fungsi proses file
     function handleFile(file) {
         if (!file) return;
 
-        // Validasi Ukuran (Max 5MB)
         if (file.size > 5 * 1024 * 1024) {
             alert("Ukuran file terlalu besar! Maksimal 5MB.");
             return;
         }
 
-        // Simpan ke variabel global
+        const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+        if (!validTypes.includes(file.type)) {
+            alert("Hanya file PDF, JPG, atau PNG yang diperbolehkan.");
+            return;
+        }
+
         uploadedFile = file;
 
         // Tampilkan Preview
         filePreview.classList.remove('hidden');
-        filePreview.innerHTML = `
-            <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded flex items-center justify-center">
-                        <i class="fa-solid fa-file"></i>
-                    </div>
-                    <div class="text-sm">
-                        <p class="font-medium text-slate-700 truncate max-w-[200px]">${file.name}</p>
-                        <p class="text-xs text-slate-500">${(file.size/1024).toFixed(1)} KB</p>
-                    </div>
-                </div>
-                <button type="button" onclick="removeFile(event)" class="text-slate-400 hover:text-red-500 transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-        `;
+        filePreview.classList.add('flex');
+        previewFileName.innerText = file.name;
     }
 
-    // Hapus file dari preview
     function removeFile(e) {
-        e.stopPropagation(); // Biar tidak memicu klik dropZone
+        if(e) e.stopPropagation();
         uploadedFile = null;
-        fileInput.value = ''; // Reset input asli
-        filePreview.innerHTML = '';
+        fileInput.value = ''; 
         filePreview.classList.add('hidden');
+        filePreview.classList.remove('flex');
     }
 
     // --- LOGIKA TABEL & SIMPAN ---
@@ -325,18 +260,31 @@
         const tbody = document.getElementById('journalBody');
         const row = document.createElement('tr');
         row.className = "group hover:bg-slate-50 transition";
+        
+        const options = `
+            <option value="101 - Kas Besar">101 - Kas Besar</option>
+            <option value="102 - Bank BCA">102 - Bank BCA</option>
+            <option value="401 - Pendapatan Jasa">401 - Pendapatan Jasa</option>
+            <option value="501 - Beban Sewa">501 - Beban Sewa</option>
+        `;
+
         row.innerHTML = `
-            <td class="px-6 py-4">
-                <select class="account-select block w-full px-3 py-2 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm">
-                    <option value="101 - Kas Besar">101 - Kas Besar</option>
-                    <option value="102 - Bank BCA">102 - Bank BCA</option>
-                    <option value="401 - Pendapatan Jasa">401 - Pendapatan Jasa</option>
-                    <option value="501 - Beban Sewa">501 - Beban Sewa</option>
+            <td class="px-6 py-3">
+                <select name="akun[]" class="account-select w-full px-3 py-2 bg-white border border-slate-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm transition">
+                    ${options}
                 </select>
             </td>
-            <td class="px-6 py-4"><input type="number" oninput="calculateTotal()" class="input-debit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white text-sm font-mono" placeholder="0"></td>
-            <td class="px-6 py-4"><input type="number" oninput="calculateTotal()" class="input-credit block w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white text-sm font-mono" placeholder="0"></td>
-            <td class="px-6 py-4 text-center"><button onclick="deleteRow(this)" class="text-slate-400 hover:text-red-500"><i class="fa-regular fa-trash-can"></i></button></td>
+            <td class="px-6 py-3">
+                <input name="debit[]" type="number" oninput="calculateTotal()" class="input-debit w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white focus:ring-1 focus:ring-blue-500 text-sm font-mono placeholder-slate-400 transition" placeholder="0">
+            </td>
+            <td class="px-6 py-3">
+                <input name="kredit[]" type="number" oninput="calculateTotal()" class="input-credit w-full text-right px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:bg-white focus:ring-1 focus:ring-blue-500 text-sm font-mono placeholder-slate-400 transition" placeholder="0">
+            </td>
+            <td class="px-6 py-3 text-center">
+                <button onclick="deleteRow(this)" class="text-slate-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 transition" title="Hapus Baris">
+                    <i class="fa-regular fa-trash-can"></i>
+                </button>
+            </td>
         `;
         tbody.appendChild(row);
     }
@@ -360,31 +308,64 @@
         document.getElementById('totalCreditDisplay').innerText = fmt.format(kredit);
 
         const diff = Math.abs(debit - kredit);
-        const isBalanced = diff === 0 && debit > 0;
+        const isBalanced = diff < 1 && debit > 0;
+        const isDiisi = diff == 0 && debit == 0;
         
         document.getElementById('diffDisplay').innerText = fmt.format(diff);
         
-        const indicator = document.getElementById('balanceIndicator');
-        const iconBox = document.getElementById('balanceIconBox');
-        const title = document.getElementById('balanceTitle');
+        // Elemen Footer Sticky
+        const statusBox = document.getElementById('balanceIconBox');
+        const icon = document.getElementById('balanceIcon');
+        const label = document.getElementById('balanceLabel');
+        const sub = document.getElementById('balanceSub');
         const btn = document.getElementById('btnSave');
 
+        // Elemen Footer Tabel (BARU)
+        const balanceRowTable = document.getElementById('balanceRowTable');
+        const balanceStatusTable = document.getElementById('balanceStatusTable');
+
         if(isBalanced) {
-            indicator.className = "bg-green-50 border-t border-green-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4";
-            iconBox.className = "w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600";
-            iconBox.innerHTML = '<i class="fa-solid fa-check"></i>';
-            title.innerText = "BALANCE";
-            title.className = "text-sm font-bold text-green-800";
+            // Update Sticky Footer
+            statusBox.className = "w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 transition-colors duration-300 shadow-sm";
+            icon.className = "fa-solid fa-check";
+            label.innerText = "BALANCE (SEIMBANG)";
+            label.className = "text-sm font-bold text-green-700";
+            sub.className = "text-xs text-green-600";
             btn.disabled = false;
-            btn.className = "px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 cursor-pointer transition shadow-md";
-        } else {
-            indicator.className = "bg-red-50 border-t border-red-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4";
-            iconBox.className = "w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600";
-            iconBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-            title.innerText = "TIDAK BALANCE";
-            title.className = "text-sm font-bold text-red-800";
+
+            // Update Tabel Footer
+            balanceRowTable.className = "bg-green-50 transition-colors duration-300";
+            balanceStatusTable.className = "inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 transition-all shadow-sm border border-green-200";
+            balanceStatusTable.innerHTML = '<i class="fa-solid fa-check-circle"></i> SEIMBANG';
+
+        } else if(isDiisi) {
+            // Update Sticky Footer
+            statusBox.className = "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 transition-colors duration-300";
+            icon.className = "fa-solid fa-circle-question";
+            label.innerText = "BELUM DIISI";
+            label.className = "text-sm font-bold text-slate-500";
+            sub.className = "text-xs text-slate-400";
             btn.disabled = true;
-            btn.className = "px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-slate-400 cursor-not-allowed transition";
+
+            // Update Tabel Footer
+            balanceRowTable.className = "bg-slate-100 transition-colors duration-300";
+            balanceStatusTable.className = "inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-500 transition-all";
+            balanceStatusTable.innerHTML = `<i class="fa-solid fa-circle-question"></i> Belum DIisi`;
+
+        }
+        else {
+            // Update Sticky Footer
+            statusBox.className = "w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 transition-colors duration-300 animate-pulse";
+            icon.className = "fa-solid fa-scale-unbalanced";
+            label.innerText = "TIDAK SEIMBANG";
+            label.className = "text-sm font-bold text-red-700";
+            sub.className = "text-xs text-red-600 font-semibold";
+            btn.disabled = true;
+
+            // Update Tabel Footer
+            balanceRowTable.className = "bg-red-50 transition-colors duration-300";
+            balanceStatusTable.className = "inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 transition-all border border-red-200";
+            balanceStatusTable.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> SELISIH: ${fmt.format(diff)}`;
         }
     }
 
@@ -397,22 +378,20 @@
         const tbody = document.getElementById('journalBody');
         tbody.innerHTML = '';
         addRow();
+        addRow();
 
-        // Reset File
-        removeFile({ stopPropagation: () => {} });
+        removeFile(null);
 
         calculateTotal();
     }
 
-    // --- PROSES SIMPAN (DENGAN FORMDATA) ---
     document.getElementById('btnSave').addEventListener('click', function() {
         if(this.disabled) return;
 
         const originalText = this.innerHTML;
-        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Menyimpan...';
+        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
         this.disabled = true;
 
-        // 1. Siapkan FormData (Bukan JSON biasa)
         const formData = new FormData();
         formData.append('tanggal', document.getElementById('trxDate').value);
         formData.append('jenis', document.getElementById('trxType').value);
@@ -422,12 +401,10 @@
              formData.append('deskripsi', document.getElementById('trxDeskripsi').value);
         }
 
-        // 2. Masukkan File (Jika ada)
         if (uploadedFile) {
             formData.append('file_bukti', uploadedFile);
         }
 
-        // 3. Masukkan Detail Jurnal (Sebagai string JSON di dalam FormData)
         const details = [];
         document.querySelectorAll('#journalBody tr').forEach(row => {
             const d = parseFloat(row.querySelector('.input-debit').value) || 0;
@@ -442,27 +419,29 @@
         });
         formData.append('details', JSON.stringify(details));
 
-        // 4. Kirim Fetch
         fetch('simpan_transaksi.php', {
             method: 'POST',
-            body: formData // Header Content-Type otomatis diatur oleh browser
+            body: formData
         })
-        .then(response => {
-            if (!response.ok) throw new Error("HTTP Error " + response.status);
-            return response.json();
-        })
+        .then(response => response.json())
         .then(result => {
             if(result.status === 'success') {
-                alert('✅ Transaksi Berhasil Disimpan!');
-                resetForm(); // Panggil reset
+                this.className = "w-full sm:w-auto bg-green-600 text-white px-8 py-3 rounded-lg text-sm font-bold shadow-md flex items-center justify-center gap-2";
+                this.innerHTML = '<i class="fa-solid fa-check-circle"></i> Berhasil!';
+                
+                setTimeout(() => {
+                    alert('✅ Transaksi Berhasil Disimpan!');
+                    resetForm();
+                    this.className = "w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2";
+                    this.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Simpan Transaksi';
+                    this.disabled = true; 
+                }, 500);
             } else {
                 throw new Error(result.message || "Gagal menyimpan.");
             }
         })
         .catch(error => {
             alert('❌ ERROR: ' + error.message);
-        })
-        .finally(() => {
             this.innerHTML = originalText;
             this.disabled = false;
         });

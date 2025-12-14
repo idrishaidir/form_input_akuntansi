@@ -1,11 +1,9 @@
 <?php
-// Paste kode ini di cek_koneksi.php dan buka di browser
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 echo "<h3>Sedang mengetes koneksi...</h3>";
 
-// Sesuaikan path ini jika perlu
 if (file_exists('config/koneksi.php')) {
     include 'config/koneksi.php';
     echo "✅ File config/koneksi.php ditemukan.<br>";
