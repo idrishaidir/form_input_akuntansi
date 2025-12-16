@@ -1,7 +1,7 @@
 <?php
 require_once 'config/koneksi.php';
 
-
+// Cek ID
 if (!isset($_GET['id'])) {
     header("Location: histori.php");
     exit;
@@ -9,7 +9,7 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-
+// Ambil Header
 $qHeader = mysqli_query($koneksi, "SELECT * FROM transaksi WHERE id = $id");
 $data = mysqli_fetch_assoc($qHeader);
 
@@ -18,7 +18,7 @@ if (!$data) {
     exit;
 }
 
-
+// Ambil Detail
 $qDetail = mysqli_query($koneksi, "SELECT * FROM jurnal_detail WHERE transaksi_id = $id");
 $details = [];
 while ($d = mysqli_fetch_assoc($qDetail)) {
@@ -217,12 +217,12 @@ while ($d = mysqli_fetch_assoc($qDetail)) {
     </main>
 
     <script>
-        
+        // Data Awal
         const initialDetails = <?php echo json_encode($details); ?>;
         let uploadedFile = null;
 
         document.addEventListener('DOMContentLoaded', () => {
-            
+            // Populate Jurnal
             if(initialDetails.length > 0) {
                 initialDetails.forEach(d => addRow(d.akun_coa, d.debit, d.kredit));
             } else {
@@ -231,7 +231,7 @@ while ($d = mysqli_fetch_assoc($qDetail)) {
             calculateTotal();
         });
 
-        
+        // --- DRAG & DROP LOGIC ---
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const newFilePreview = document.getElementById('newFilePreview');
@@ -287,7 +287,7 @@ while ($d = mysqli_fetch_assoc($qDetail)) {
             newFilePreview.classList.remove('flex');
         }
 
-        
+        // --- TABLE LOGIC ---
         function addRow(akun = '', debit = 0, kredit = 0) {
             const tbody = document.getElementById('journalBody');
             const row = document.createElement('tr');
@@ -343,64 +343,37 @@ while ($d = mysqli_fetch_assoc($qDetail)) {
             document.getElementById('totalCreditDisplay').innerText = fmt.format(kredit);
 
             const diff = Math.abs(debit - kredit);
-            const isBalanced = diff < 1 && debit > 0;
-            const isDiisi = diff == 0 && debit == 0;
-            
-            document.getElementById('diffDisplay').innerText = fmt.format(diff);
+            const isBalanced = diff < 1; // Toleransi koma kecil
             
             const statusBox = document.getElementById('balanceIconBox');
             const icon = document.getElementById('balanceIcon');
             const label = document.getElementById('balanceLabel');
             const sub = document.getElementById('balanceSub');
-            const btn = document.getElementById('btnSave');
+            const btn = document.getElementById('btnUpdate');
+            const diffDisplay = document.getElementById('diffDisplay');
 
-            const balanceRowTable = document.getElementById('balanceRowTable');
-            const balanceStatusTable = document.getElementById('balanceStatusTable');
+            diffDisplay.innerText = fmt.format(diff);
 
-            if(isBalanced) {
+            if(isBalanced && debit > 0) {
+                // STYLE BALANCE
                 statusBox.className = "w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 transition-colors duration-300 shadow-sm";
                 icon.className = "fa-solid fa-check";
                 label.innerText = "BALANCE (SEIMBANG)";
                 label.className = "text-sm font-bold text-green-700";
                 sub.className = "text-xs text-green-600";
                 btn.disabled = false;
-
-                
-                balanceRowTable.className = "bg-green-50 transition-colors duration-300";
-                balanceStatusTable.className = "inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 transition-all shadow-sm border border-green-200";
-                balanceStatusTable.innerHTML = '<i class="fa-solid fa-check-circle"></i> SEIMBANG';
-
-            } else if(isDiisi) {
-                
-                statusBox.className = "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 transition-colors duration-300";
-                icon.className = "fa-solid fa-circle-question";
-                label.innerText = "BELUM DIISI";
-                label.className = "text-sm font-bold text-slate-500";
-                sub.className = "text-xs text-slate-400";
-                btn.disabled = true;
-
-                
-                balanceRowTable.className = "bg-slate-100 transition-colors duration-300";
-                balanceStatusTable.className = "inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-500 transition-all";
-                balanceStatusTable.innerHTML = `<i class="fa-solid fa-circle-question"></i> Belum DIisi`;
-
-            }
-            else {
-                
+            } else {
+                // STYLE TIDAK BALANCE
                 statusBox.className = "w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 transition-colors duration-300 animate-pulse";
                 icon.className = "fa-solid fa-scale-unbalanced";
                 label.innerText = "TIDAK SEIMBANG";
                 label.className = "text-sm font-bold text-red-700";
                 sub.className = "text-xs text-red-600 font-semibold";
                 btn.disabled = true;
-
-                
-                balanceRowTable.className = "bg-red-50 transition-colors duration-300";
-                balanceStatusTable.className = "inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 transition-all border border-red-200";
-                balanceStatusTable.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> SELISIH: ${fmt.format(diff)}`;
             }
         }
 
+        // --- SUBMIT LOGIC ---
         document.getElementById('btnUpdate').addEventListener('click', function() {
             if(this.disabled) return;
             

@@ -14,11 +14,9 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
         
-        /* Hilangkan spinner di input number */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         
-        /* Drag & Drop Active State */
         .drag-active { border-color: #3B82F6 !important; background-color: #EFF6FF !important; }
     </style>
 </head>
@@ -187,17 +185,14 @@
     </main>
 
     <script>
-    // Variabel Global
     let uploadedFile = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-        // Tampilkan 2 baris default saat loading pertama
         addRow(); 
         addRow();
         calculateTotal();
     });
 
-    // --- LOGIKA DRAG & DROP & UPLOAD ---
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const filePreview = document.getElementById('filePreview');
@@ -240,7 +235,6 @@
 
         uploadedFile = file;
 
-        // Tampilkan Preview
         filePreview.classList.remove('hidden');
         filePreview.classList.add('flex');
         previewFileName.innerText = file.name;
@@ -253,8 +247,7 @@
         filePreview.classList.add('hidden');
         filePreview.classList.remove('flex');
     }
-
-    // --- LOGIKA TABEL & SIMPAN ---
+-
 
     function addRow() {
         const tbody = document.getElementById('journalBody');
@@ -313,19 +306,16 @@
         
         document.getElementById('diffDisplay').innerText = fmt.format(diff);
         
-        // Elemen Footer Sticky
         const statusBox = document.getElementById('balanceIconBox');
         const icon = document.getElementById('balanceIcon');
         const label = document.getElementById('balanceLabel');
         const sub = document.getElementById('balanceSub');
         const btn = document.getElementById('btnSave');
 
-        // Elemen Footer Tabel (BARU)
         const balanceRowTable = document.getElementById('balanceRowTable');
         const balanceStatusTable = document.getElementById('balanceStatusTable');
 
         if(isBalanced) {
-            // Update Sticky Footer
             statusBox.className = "w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 transition-colors duration-300 shadow-sm";
             icon.className = "fa-solid fa-check";
             label.innerText = "BALANCE (SEIMBANG)";
@@ -333,13 +323,13 @@
             sub.className = "text-xs text-green-600";
             btn.disabled = false;
 
-            // Update Tabel Footer
+            
             balanceRowTable.className = "bg-green-50 transition-colors duration-300";
             balanceStatusTable.className = "inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 transition-all shadow-sm border border-green-200";
             balanceStatusTable.innerHTML = '<i class="fa-solid fa-check-circle"></i> SEIMBANG';
 
         } else if(isDiisi) {
-            // Update Sticky Footer
+            
             statusBox.className = "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 transition-colors duration-300";
             icon.className = "fa-solid fa-circle-question";
             label.innerText = "BELUM DIISI";
@@ -347,14 +337,14 @@
             sub.className = "text-xs text-slate-400";
             btn.disabled = true;
 
-            // Update Tabel Footer
+            
             balanceRowTable.className = "bg-slate-100 transition-colors duration-300";
             balanceStatusTable.className = "inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-500 transition-all";
             balanceStatusTable.innerHTML = `<i class="fa-solid fa-circle-question"></i> Belum DIisi`;
 
         }
         else {
-            // Update Sticky Footer
+            
             statusBox.className = "w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 transition-colors duration-300 animate-pulse";
             icon.className = "fa-solid fa-scale-unbalanced";
             label.innerText = "TIDAK SEIMBANG";
@@ -362,7 +352,7 @@
             sub.className = "text-xs text-red-600 font-semibold";
             btn.disabled = true;
 
-            // Update Tabel Footer
+            
             balanceRowTable.className = "bg-red-50 transition-colors duration-300";
             balanceStatusTable.className = "inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 transition-all border border-red-200";
             balanceStatusTable.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> SELISIH: ${fmt.format(diff)}`;

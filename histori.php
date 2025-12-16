@@ -1,8 +1,8 @@
 <?php
-// Masukkan koneksi database
+
 require_once 'config/koneksi.php';
 
-// --- LOGIKA HAPUS DATA ---
+
 if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['id'])) {
     $id = intval($_GET['id']);
     
@@ -26,32 +26,30 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['id'])) {
     }
 }
 
-// --- LOGIKA PENCARIAN (SEARCH) ---
+
 $keyword = "";
 $whereClause = "";
-$urlSearch = ""; // Variabel untuk menempelkan kata kunci di link pagination
+$urlSearch = "";
 
 if (isset($_GET['cari'])) {
     $keyword = mysqli_real_escape_string($koneksi, $_GET['cari']);
-    // Filter berdasarkan Nomor Bukti ATAU Deskripsi
+    
     $whereClause = "WHERE t.nomor_bukti LIKE '%$keyword%' OR t.deskripsi LIKE '%$keyword%'";
     $urlSearch = "&cari=" . urlencode($keyword);
 }
 
-// --- LOGIKA PAGINATION ---
+
 $batas = 10;
 $halaman = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
 $halaman_awal = ($halaman > 1) ? ($halaman * $batas) - $batas : 0;
 
-// Hitung total data (HARUS MENGIKUTI FILTER PENCARIAN)
-// Kita join ke detail hanya untuk memastikan konsistensi, atau cukup hitung dari tabel transaksi
 $query_total = "SELECT COUNT(DISTINCT t.id) as total FROM transaksi t $whereClause";
 $result_total = mysqli_query($koneksi, $query_total);
 $row_total = mysqli_fetch_assoc($result_total);
 $jumlah_data = $row_total['total'];
 $total_halaman = ceil($jumlah_data / $batas);
 
-// --- QUERY UTAMA DENGAN FILTER & LIMIT ---
+
 $query = "SELECT t.*, SUM(d.debit) as total_nilai, COUNT(d.id) as jumlah_baris 
           FROM transaksi t 
           LEFT JOIN jurnal_detail d ON t.id = d.transaksi_id 
@@ -132,7 +130,7 @@ $result = mysqli_query($koneksi, $query);
                                         <?php echo date('d/m/Y', strtotime($row['tanggal'])); ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-medium text-slate-600">
-                                        <?php // Highlight kata kunci jika ada
+                                        <?php 
                                             $bukti = htmlspecialchars($row['nomor_bukti']);
                                             if($keyword) $bukti = str_ireplace($keyword, "<span class='bg-yellow-200'>$keyword</span>", $bukti);
                                             echo $bukti;
@@ -155,7 +153,7 @@ $result = mysqli_query($koneksi, $query);
                                     </td>
 
                                     <td class="px-6 py-4 text-sm text-slate-600 max-w-xs truncate" title="<?php echo htmlspecialchars($row['deskripsi']); ?>">
-                                        <?php // Highlight kata kunci di deskripsi
+                                        <?php 
                                             $desk = htmlspecialchars($row['deskripsi']);
                                             if($keyword) $desk = str_ireplace($keyword, "<span class='bg-yellow-200'>$keyword</span>", $desk);
                                             echo $desk;
